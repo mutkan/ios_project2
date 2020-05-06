@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     var countries = [String]()
     var score = 0
     var correctAnswer = 0
+    var questionAsked = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,13 +34,13 @@ class ViewController: UIViewController {
         askQuestion()
     }
     
-    func askQuestion(action: UIAlertAction? = nil){
+    func askQuestion(action: UIAlertAction! = nil){
         countries.shuffle()
         button1.setImage(UIImage(named: countries[0]), for: .normal)
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         correctAnswer = Int.random(in: 0...2)
-        title = countries[correctAnswer].uppercased()
+        title = countries[correctAnswer].uppercased() + " - Your score is \(score)"
     }
 
     @IBAction func buttonTapped(_ sender: UIButton) {
@@ -48,14 +49,22 @@ class ViewController: UIViewController {
             title = "Correct"
             score += 1
         }else{
-            title = "Wrong"
+            title = "Wrong! That is the flag of \(countries[sender.tag].uppercased()) "
             score -= 1
         }
         
-        
-        let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
-        present(ac,animated: false)
+        if questionAsked == 10{
+            let ac = UIAlertController(title: title, message: "Your final score is \(score)", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+            present(ac,animated: false)
+            score = 0
+            questionAsked = 0
+        }else{
+            let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+            present(ac,animated: false)
+        }
+        questionAsked+=1
     }
     
 }
